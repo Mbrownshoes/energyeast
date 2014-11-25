@@ -2,8 +2,28 @@
 <met charset="utf-8">
 <style>
 
+.background {
+	fill: none;
+	pointer-events: all;
+}
 
-.land {
+#provinces {
+	fill: #aaa;
+}
+
+#provinces .active {
+	fill: orange;
+}
+
+#prov-borders {
+	fill: none;
+	stroke: #fff;
+	stroke-width: 1.5px;
+	stroke-linejoin: round;
+	pointer-events: none;
+}
+
+/*.land {
 	fill: #ddd;
 }
 
@@ -12,7 +32,7 @@
 	stroke: #fff;
 	stroke-linejoin: round;
 	stroke-linecap: round;
-}
+}*/
 
 .pipeline {
 	fill: none;
@@ -28,7 +48,8 @@
 <script>
 
 var width = 960,
-	height = 800;
+	height = 800,
+	centered;
 
 var path = d3.geo.path()
 	.projection(null);
@@ -38,24 +59,44 @@ var svg = d3.select("body")
 	.attr("width", width)
 	.attr("height", height);
 
+svg.append("rect")
+	.attr("class", "background")
+	.attr("width", width)
+	.attr("height", height)
+	.on("click", clicked);
+
+var g = svg.append("g")
+
 d3.json("can.json", function(error, canada) {
 	if (error) return console.error(error);
 
-	svg.append("path")
-		.datum(topojson.feature(canada, canada.objects.nation))
-		.attr("d", path)
-		.attr("class", "land");
+	// g.append("g")
+	// 	.datum(topojson.feature(canada, canada.objects.nation))
+	// 	.attr("d", path)
+	// 	.attr("class", "land");
 
-	svg.append("path")
+	g.append("g")
+		.attr("id", "provinces")
+		.selectAll("path")
+		.data(topojson.feature(canada, canada.objects.prov).features)
+		.enter()
+		.append("path")
+		.attr("d", path)
+		.on("click", clicked);
+		// .attr("class", "border border--prov")
+
+	g.append("path")
 		.datum(topojson.mesh(canada, canada.objects.prov, function(a, b) {
-			return a !== b; }))
-		.attr("class", "border border--prov")
+			return a !== b;
+		}))
+		.attr("id", "prov-borders")
 		.attr("d", path);
+
 
 d3.json("energyEast.json", function(error, pipeline) {
 	if (error) return console.error(error);
 
-	svg.append("path")
+	g.append("path")
 		.datum(topojson.feature(pipeline, pipeline.objects.pipeline))
 		.attr("d", path)
 		.attr("class", "pipeline");
@@ -64,6 +105,33 @@ d3.json("energyEast.json", function(error, pipeline) {
 
 });
 
+function clicked(d) {
+	var x, y, k;
+
+	if (d && centered !==d) {
+		var centroid = path.centroid(d);
+		x = centroid[0];
+		y = centroid[1];
+		k = 4;
+		centered = d;	
+	} else {
+		x = width /2;
+		y = height /2;
+		k = 1;
+		centered = null;
+	}
+
+	g.selectAll("path")
+		.classed("active", centered && function(d) {
+			return d === centered;
+		});
+
+	g.transition()
+		.duration(750)
+		.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")")
+		.style("stroke-width", 1.5 / k + "px");
+
+}
 
 
 </script>
