@@ -1,13 +1,7 @@
 <!DOCTYPE html>
 <met charset="utf-8">
 <style>
-/*
-path {
-	fill: none;
-	stroke: #000;
-	stroke-linejoin: round;
-	stroke-linecap: round;
-}*/
+
 
 .land {
 	fill: #ddd;
@@ -18,6 +12,12 @@ path {
 	stroke: #fff;
 	stroke-linejoin: round;
 	stroke-linecap: round;
+}
+
+.pipeline {
+	fill: none;
+	stroke: #777;
+
 }
 
 </style>
@@ -50,6 +50,19 @@ d3.json("can.json", function(error, canada) {
 			return a !== b; }))
 		.attr("class", "border border--prov")
 		.attr("d", path);
+
+d3.json("energyEast.json", function(error, pipeline) {
+	if (error) return console.error(error);
+
+	svg.append("path")
+		.datum(topojson.feature(pipeline, pipeline.objects.pipeline))
+		.attr("d", path)
+		.attr("class", "pipeline");
+
 });
+		
+});
+
+
 
 </script>

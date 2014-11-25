@@ -9,7 +9,6 @@ build/gpr_000b11a_e.shp: build/gpr_000b11a_e.zip
 	touch $@
 
 
-
 build/prov.json: build/gpr_000b11a_e.shp 
 	node_modules/.bin/topojson \
 		-o $@ \
@@ -28,3 +27,34 @@ can.json: build/prov.json
 		--in-object=prov \
 		--out-object=nation \
 		-- $<
+
+# Gov pipeline data
+
+build/pipe.json: build/can/EN_1180009_1.shp
+	ogr2ogr -f GeoJSON -where "PRODUCT = 1 OR PRODUCT = 2" \
+	build/pipe.json \
+	build/can/EN_1180009_1.shp
+
+pipeline.json: build/pipe.json
+	node_modules/.bin/topojson \
+	--o $@ \
+	--projection='width = 960, height = 800, d3.geo.conicConformal() \
+			.rotate([98, 0]) \
+		    .center([0, 60]) \
+		    .parallels([-10, 85.5]) \
+		    .scale(1300) \
+		    .translate([width / 2, height / 2])' \
+	--properties=PRODUCT,CODE \
+	-- pipeline=$<
+
+
+energyEast.json: build/mygeodata/energy_east.shp
+	node_modules/.bin/topojson \
+	--o $@ \
+	--projection='width = 960, height = 800, d3.geo.conicConformal() \
+			.rotate([98, 0]) \
+		    .center([0, 60]) \
+		    .parallels([-10, 85.5]) \
+		    .scale(1300) \
+		    .translate([width / 2, height / 2])' \
+	-- pipeline=$<
