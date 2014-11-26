@@ -34,6 +34,13 @@
 	stroke-linecap: round;
 }*/
 
+.new_pipeline {
+	fill: none;
+	stroke: hotpink;
+	stroke-width: 2px;
+
+}
+
 .pipeline {
 	fill: none;
 	stroke: steelblue;
@@ -93,7 +100,7 @@ d3.json("can.json", function(error, canada) {
 		.attr("d", path);
 
 
-d3.json("energyEast.json", function(error, pipeline) {
+d3.json("existing_pipeline.json", function(error, pipeline) {
 	if (error) return console.error(error);
 
 	g.append("path")
@@ -102,6 +109,18 @@ d3.json("energyEast.json", function(error, pipeline) {
 		.attr("class", "pipeline");
 
 });
+
+d3.json("new_pipeline.json", function(error, pipeline) {
+	if (error) return console.error(error);
+
+	g.append("path")
+		.datum(topojson.feature(pipeline, pipeline.objects.pipeline))
+		.attr("d", path)
+		.attr("class", "new_pipeline");
+
+});
+
+
 
 });
 
@@ -112,7 +131,7 @@ function clicked(d) {
 		var centroid = path.centroid(d);
 		x = centroid[0];
 		y = centroid[1];
-		k = 4;
+		k = 3;
 		centered = d;	
 	} else {
 		x = width /2;

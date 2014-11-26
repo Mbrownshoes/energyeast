@@ -47,8 +47,32 @@ pipeline.json: build/pipe.json
 	--properties=PRODUCT,CODE \
 	-- pipeline=$<
 
-
+# entire energy east as one
 energyEast.json: build/mygeodata/energy_east.shp
+	node_modules/.bin/topojson \
+	--o $@ \
+	--projection='width = 960, height = 800, d3.geo.conicConformal() \
+			.rotate([98, 0]) \
+		    .center([0, 60]) \
+		    .parallels([-10, 85.5]) \
+		    .scale(1300) \
+		    .translate([width / 2, height / 2])' \
+	-- pipeline=$<
+
+# existing pipelin
+existing_pipeline.json: build/existing/energy_east.shp
+	node_modules/.bin/topojson \
+	--o $@ \
+	--projection='width = 960, height = 800, d3.geo.conicConformal() \
+			.rotate([98, 0]) \
+		    .center([0, 60]) \
+		    .parallels([-10, 85.5]) \
+		    .scale(1300) \
+		    .translate([width / 2, height / 2])' \
+	-- pipeline=$<
+
+# new pipeline
+new_pipeline.json: build/newpipe/alberta.shp
 	node_modules/.bin/topojson \
 	--o $@ \
 	--projection='width = 960, height = 800, d3.geo.conicConformal() \
