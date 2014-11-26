@@ -30,6 +30,7 @@
 	fill: none;
 	stroke: hotpink;
 	stroke-width: 2px;
+	stroke-opacity: 0.8;
 
 }
 
@@ -37,7 +38,11 @@
 	fill: none;
 	stroke: steelblue;
 	stroke-width: 2px;
+	stroke-opacity: 0.8;
+}
 
+.aboriginal {
+	fill: #006837;
 }
 
 </style>
@@ -113,7 +118,8 @@ d3.json("aboriginal_land.json", function(error, aboriginal) {
 
 	g.append("path")
 		.datum(topojson.mesh(aboriginal))
-		.attr("d", path);
+		.attr("d", path)
+		.attr("class", "aboriginal");
 
 });
 });
