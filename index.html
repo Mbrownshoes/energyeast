@@ -8,7 +8,8 @@
 }
 
 #provinces {
-	fill: #C6C6C6;
+	fill: #ddd;
+	cursor: pointer;
 }
 
 #provinces .active {
@@ -23,16 +24,7 @@
 	pointer-events: none;
 }
 
-/*.land {
-	fill: #ddd;
-}
 
-.border {
-	fill: none;
-	stroke: #fff;
-	stroke-linejoin: round;
-	stroke-linecap: round;
-}*/
 
 .new_pipeline {
 	fill: none;
@@ -77,10 +69,6 @@ var g = svg.append("g")
 d3.json("can.json", function(error, canada) {
 	if (error) return console.error(error);
 
-	// g.append("g")
-	// 	.datum(topojson.feature(canada, canada.objects.nation))
-	// 	.attr("d", path)
-	// 	.attr("class", "land");
 
 	g.append("g")
 		.attr("id", "provinces")
@@ -120,8 +108,14 @@ d3.json("new_pipeline.json", function(error, pipeline) {
 
 });
 
+d3.json("aboriginal_land.json", function(error, aboriginal) {
+	if (error) return console.error(error);
 
+	g.append("path")
+		.datum(topojson.mesh(aboriginal))
+		.attr("d", path);
 
+});
 });
 
 function clicked(d) {
