@@ -55,9 +55,11 @@
 <body>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="http://d3js.org/topojson.v1.min.js"></script>
+
 <div class="container">
+	<div class="row">
+	<div class="col-md-6">
 <h1>In the Pipeline?</h1>
-</div>
 <script>
 
 
@@ -107,7 +109,7 @@ d3.json("can.json", function(error, canada) {
 
 d3.json("existing_pipeline.json", function(error, pipeline) {
 	if (error) return console.error(error);
-
+	console.log(d3.geo.length(topojson.feature(pipeline, pipeline.objects.pipeline)))
 	g.append("path")
 		.datum(topojson.feature(pipeline, pipeline.objects.pipeline))
 		.attr("d", path)
@@ -214,3 +216,6 @@ function clicked(d) {
 
 
 </script>
+</div>
+</div>
+</div>
