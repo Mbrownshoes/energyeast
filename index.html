@@ -35,7 +35,7 @@
 	fill: none;
 	stroke: hotpink;
 	stroke-width: 2px;
-	stroke-opacity: 0.8;
+	stroke-opacity: 0.9;
 	stroke-dasharray: 8,3;
 
 }
@@ -44,7 +44,7 @@
 	fill: none;
 	stroke: steelblue;
 	stroke-width: 2px;
-	stroke-opacity: 0.8;
+	stroke-opacity: 0.9;
 }
 
 .aboriginal {
@@ -136,8 +136,8 @@ d3.json("aboriginal_land.json", function(error, aboriginal) {
 });
 
 
-var data = ["Gas pipeline (to be converted)", "To be built"]
-var color = ["steelblue", "hotpink"]
+var data = ["Gas pipeline (needs to be converted)", "Yet to be built", "Aboriginal land"]
+var color = ["steelblue", "hotpink","#006837"]
 
 var legend = svg.selectAll(".legend")
 	.data(data)
@@ -148,12 +148,26 @@ var legend = svg.selectAll(".legend")
 		return "translate(0," + 1 * 20 + ")"; });
 
 legend.append("rect")
-	.attr("x", width - 240)
-	.attr("y", function(d,i) {
-		return i *20 + 20;
+	.attr("x", function(d) {
+		if (d == "Aboriginal land")
+			return width - 210
+		else return width - 240
 	})
-	.attr("width", 40)
-	.attr("height", 3)
+	.attr("y", function(d,i) {
+		if (d == "Aboriginal land")
+			return i *20 + 19;
+		else return i *20 + 20;
+	})
+	.attr("width", function(d) {
+		if (d == "Aboriginal land")
+			return 10
+		else return 40
+	})
+	.attr("height", function(d) {
+		if (d == "Aboriginal land")
+			return 5
+		else return 3
+	})
 	.style("fill", function(d,i) { return color[i]});
 
 legend.append("text")
