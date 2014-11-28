@@ -56,13 +56,29 @@
 	fill: #006837;
 }
 
-.city {
-      fill: #345;
-      stroke: #fff;
-    }
-#cities {
-      stroke-width: 0;
-    }
+
+
+.bubble {
+	fill: brown;
+	fill-opacity: .5;
+	stroke: #fff;
+	stroke-width: .1px;
+}
+
+.bubble :hover {
+	stroke: #000;
+}
+
+.legend circle {
+	fill: none;
+	stroke: #ccc;
+}
+
+.legend text {
+	fill: #777;
+	font: 10px sans-serif;
+	text-anchor: middle;
+}
 
 </style>
 <body>
@@ -87,6 +103,9 @@ var width = 960,
 	height = 700,
 	active = d3.select(null);
 
+var formatNumber = d3.format(",.0f");
+
+
 var path = d3.geo.path()
 	.projection(null);
 
@@ -101,6 +120,10 @@ var svg = d3.select("body")
 	.attr("width", width)
 	.attr("height", height)
 	.on("click", stopped, true);
+
+var radius = d3.scale.sqrt()
+				.domain([0, 1e6])
+				.range([0,8]);
 
 
 
@@ -211,7 +234,7 @@ legend.append("text")
 
 var test 
 function clicked(d) {
-	g.selectAll([".city", ".aboriginal"]).remove();
+	g.selectAll([".bubble", ".aboriginal"]).remove();
 	console.log(d.properties.province)
 	prov_name = d.properties.province;
 
@@ -254,12 +277,44 @@ function clicked(d) {
 	d3.json("cities.json", function(error, cities) {
 		if (error) return console.error(error);
 		g.append("g")
-            .selectAll("path")
+			.attr("class", "bubble")
+            .selectAll("circle")
             .data(topojson.feature(cities, cities.objects.cities).features.filter(function(d) { return prov_name == d.properties.province; }))
             .enter()
-            .append("path")
-            .attr("class", "city")
-            .attr("d", path.pointRadius(2));
+            .append("circle")
+		.attr("transform", function(d) {
+			return "translate(" + path.centroid(d) + ")";
+		})
+		.attr("r", function(d) {
+			return radius(d.properties.POP_MAX);
+		})
+		.append("title")
+		.text(function(d) {
+			return d.properties.name
+			+ "\nPopulation " + formatNumber(d.properties.POP_MAX);
+		});
+
+
+var legendPop = svg.append("g")
+				.attr("class", "legend")
+				.attr("transform", "translate(" + (width - 200) + "," + (height - 100) + ")")
+				.selectAll("g")
+				.data([5e5,2e6,4e6])
+				.enter().append("g");
+
+legendPop.append("circle")
+		.attr("cy", function(d) {
+			return - radius(d);
+		})
+		.attr("r", radius);
+
+legendPop.append("text")
+		.attr("y", function(d) {
+			return - 2 * radius(d);
+		})
+		.attr("dy", "1.3em")
+		.text(d3.format(".1s"));
+
 
 	d3.json("AL_TA_" + prov_name.replace(/ /g,"_") +"_2_55_eng.json", function(error, aboriginal) {
 		if (error) return console.error(error);
