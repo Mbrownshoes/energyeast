@@ -34,7 +34,6 @@
 	stroke: hotpink;
 	stroke-width: 2px;
 	stroke-opacity: 0.9;
-	stroke-dasharray: 8,3;
 
 }
 
@@ -207,14 +206,31 @@ function clicked(d) {
   active = d3.select(this).classed("active", true);
 
   
-
-	var bounds = path.bounds(d),
-	  dx = bounds[1][0] - bounds[0][0],
-	  dy = bounds[1][1] - bounds[0][1],
-	  x = (bounds[0][0] + bounds[1][0]) / 2,
-	  y = (bounds[0][1] + bounds[1][1]) / 2,
-	  scale = .9 / Math.max(dx / width, dy / height),
-	  translate = [width / 2 - scale * x, height / 2 - scale * y];
+	if (prov_name == "Quebec")
+		var bounds = path.bounds(d),
+		dx = bounds[1][0] - bounds[0][0],
+		dy = bounds[1][1] - bounds[0][1],
+		x = (bounds[0][0] + bounds[1][0]) / 2,
+		y = (bounds[0][1] + bounds[1][1]) / 2,
+		scale = .9 / Math.max(dx / width, dy / height),
+		translate = [width / 2 - scale * x, height / 2 - scale * y-300];
+	else if (prov_name == "New Brunswick")
+		var bounds = path.bounds(d),
+		dx = bounds[1][0] - bounds[0][0],
+		dy = bounds[1][1] - bounds[0][1],
+		x = (bounds[0][0] + bounds[1][0]) / 2,
+		y = (bounds[0][1] + bounds[1][1]) / 2,
+		scale = .5 / Math.max(dx / width, dy / height),
+		translate = [width / 2 - scale * x, height / 2 - scale * y];
+	else
+		var bounds = path.bounds(d),
+		  dx = bounds[1][0] - bounds[0][0],
+		  dy = bounds[1][1] - bounds[0][1],
+		  x = (bounds[0][0] + bounds[1][0]) / 2,
+		  y = (bounds[0][1] + bounds[1][1]) / 2,
+		  scale = .9 / Math.max(dx / width, dy / height),
+		  translate = [width / 2 - scale * x, height / 2 - scale * y-200];
+		  
 
 	svg.transition()
 	  .duration(750)
@@ -230,25 +246,13 @@ function clicked(d) {
             .attr("class", "city")
             .attr("d", path.pointRadius(2));
 
-	d3.json("AL_TA_" + prov_name +"_2_55_eng.json", function(error, aboriginal) {
+	d3.json("AL_TA_" + prov_name.replace(/ /g,"_") +"_2_55_eng.json", function(error, aboriginal) {
 		if (error) return console.error(error);
 		g.append("path")
 		.datum(topojson.mesh(aboriginal))
 		.attr("d", path)
 		.attr("class", "aboriginal");
 
-		// g.append("g")
-  //           .selectAll("path")
-  //           .data(topojson.feature(aboriginal, aboriginal.objects.province).features.filter(function(d) { return prov_name == d.properties.province; }))
-  //           .enter()
-  //           .append("path")
-  //           .attr("class", "city")
-  //           .attr("d", path);
-
-		// g.append("path")
-		// .datum(topojson.mesh(aboriginal))
-		// .attr("d", path)
-		// .attr("class", "aboriginal");
 
 	});  
 
