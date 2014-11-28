@@ -44,6 +44,14 @@
 	stroke-opacity: 0.9;
 }
 
+.g-summary {
+  font-size: 14px;
+  line-height: 1.35em;
+  position: absolute;
+  width: 340px;
+  color: #333;
+}
+
 .aboriginal {
 	fill: #006837;
 }
@@ -64,12 +72,19 @@
 <div class="container">
 	<div class="row">
 	<div class="col-md-6">
-<h1>In the Pipeline?</h1>
+<h1>Energy East Pipeline</h1>
+
+<div class="g-summary" style="left:20px;">
+<h3>To build or not to build</h3>
+Energy East is a proposed pipeline what would transport crude oil from the Alberta oil sands to refineries in Eastern Canada.
+</div>
+
+</div>
 <script>
 
 
 var width = 960,
-	height = 800,
+	height = 700,
 	active = d3.select(null);
 
 var path = d3.geo.path()
@@ -146,7 +161,7 @@ d3.json("new_pipeline.json", function(error, pipeline) {
 
 
 
-var data = ["Gas pipeline (needs to be converted)", "Yet to be built", "Aboriginal lands"]
+var data = ["Gas pipeline (to be converted for oil)", "Needs to be built", "Aboriginal lands"]
 var color = ["steelblue", "hotpink","#006837"]
 
 var legend = svg.selectAll(".legend")
@@ -213,14 +228,14 @@ function clicked(d) {
 		x = (bounds[0][0] + bounds[1][0]) / 2,
 		y = (bounds[0][1] + bounds[1][1]) / 2,
 		scale = .9 / Math.max(dx / width, dy / height),
-		translate = [width / 2 - scale * x, height / 2 - scale * y-300];
+		translate = [width / 2 - scale * x, height / 2 - scale * y-100];
 	else if (prov_name == "New Brunswick")
 		var bounds = path.bounds(d),
 		dx = bounds[1][0] - bounds[0][0],
 		dy = bounds[1][1] - bounds[0][1],
 		x = (bounds[0][0] + bounds[1][0]) / 2,
 		y = (bounds[0][1] + bounds[1][1]) / 2,
-		scale = .5 / Math.max(dx / width, dy / height),
+		scale = .4 / Math.max(dx / width, dy / height),
 		translate = [width / 2 - scale * x, height / 2 - scale * y];
 	else
 		var bounds = path.bounds(d),
@@ -229,7 +244,7 @@ function clicked(d) {
 		  x = (bounds[0][0] + bounds[1][0]) / 2,
 		  y = (bounds[0][1] + bounds[1][1]) / 2,
 		  scale = .9 / Math.max(dx / width, dy / height),
-		  translate = [width / 2 - scale * x, height / 2 - scale * y-200];
+		  translate = [width / 2 - scale * x, height / 2 - scale * y];
 		  
 
 	svg.transition()
