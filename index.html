@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <met charset="utf-8">
 
-<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+<!-- <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"> -->
 <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 <link rel="stylesheet" href="main.css">
 <style>
@@ -69,12 +69,12 @@
 	stroke: #000;
 }
 
-.legend circle {
+.legend_Pop circle {
 	fill: none;
 	stroke: #ccc;
 }
 
-.legend text {
+.legend_Pop text {
 	fill: #777;
 	font: 10px sans-serif;
 	text-anchor: middle;
@@ -85,19 +85,25 @@
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="http://d3js.org/topojson.v1.min.js"></script>
 
-<div class="container">
-	<div class="row">
-	<div class="col-md-6">
 <h1>Energy East Pipeline</h1>
 
-<div class="g-summary" style="left:20px;">
-<h3>To build or not to build</h3>
+<!-- <div class="g-summary" style="left:20px;"> -->
+<!-- <h3>Environmental Impact</h3>
 Energy East is a proposed pipeline what would transport crude oil from the Alberta oil sands to refineries in Eastern Canada.
-</div>
+</div> -->
 
-</div>
+<!-- </div> -->
 <script>
 
+// d3.select("body")
+
+
+d3.select("body")
+	.append("h3")
+	.html("Environmental Impact")
+	.append("p")
+	.html("Energy East is a proposed pipeline what would transport crude oil from the Alberta oil sands to refineries in Eastern Canada.")
+	.attr("class","g-summary")
 
 var width = 960,
 	height = 700,
@@ -140,12 +146,7 @@ svg
 	.call(zoom)
 	.call(zoom.event)
 
-var legendPop = g.append("g")
-				.attr("class", "legend")
-				.attr("transform", "translate(" + (width - 200) + "," + (height - 100) + ")")
-				.selectAll("g")
-				.data([5e5,2e6,4e6])
-				.enter().append("g");
+
 
 d3.json("can.json", function(error, canada) {
 	if (error) return console.error(error);
@@ -195,38 +196,39 @@ d3.json("new_pipeline.json", function(error, pipeline) {
 var data = ["Gas pipeline (to be converted for oil)", "Needs to be built", "Aboriginal lands"]
 var color = ["steelblue", "hotpink","#006837"]
 
-var legend = svg.selectAll(".legend")
+var legend_t = svg.selectAll("legend_t")
 	.data(data)
 	.enter()
 	.append("g")
 	.attr("class", "legend")
 	.attr("transform", function(d,i) { 
+		console.log(d)
 		return "translate(0," + 1 * 20 + ")"; });
 
-legend.append("rect")
+legend_t.append("rect")
 	.attr("x", function(d) {
-		if (d == "Aboriginal land")
+		if (d == "Aboriginal lands")
 			return width - 210
 		else return width - 240
 	})
 	.attr("y", function(d,i) {
-		if (d == "Aboriginal land")
+		if (d == "Aboriginal lands")
 			return i *20 + 19;
 		else return i *20 + 20;
 	})
 	.attr("width", function(d) {
-		if (d == "Aboriginal land")
+		if (d == "Aboriginal lands")
 			return 10
 		else return 40
 	})
 	.attr("height", function(d) {
-		if (d == "Aboriginal land")
+		if (d == "Aboriginal lands")
 			return 5
 		else return 3
 	})
 	.style("fill", function(d,i) { return color[i]});
 
-legend.append("text")
+legend_t.append("text")
 	.attr("x", width - 190)
 	.attr("y", function(d,i) {
 		return i *20 + 20;
@@ -242,9 +244,12 @@ legend.append("text")
 
 var test 
 function clicked(d) {
-	g.selectAll([".bubble", ".aboriginal", ".legendPop"]).remove();
+	g.selectAll([".bubble", ".aboriginal", ".legend_Pop"]).remove();
+	d3.select("h3").style("visibility","hidden")
+
 	console.log(d.properties.province)
 	prov_name = d.properties.province;
+
 
 	
   if (active.node() === this) return reset();
@@ -303,22 +308,28 @@ function clicked(d) {
 		});
 
 
+// var legend_Pop = g.append("g")
+// 				.attr("class", "legend_Pop")
+// 				.attr("transform", "translate(" + (width - 200) + "," + (height - 100) + ")")
+// 				.selectAll("g")
+// 				.data([5e5,2e6,4e6])
+// 				.enter()
+// 				.append("g");
 
+// legend_Pop.append("circle")
+// 		.attr("cy", function(d) {
+// 			return - radius(d);
+// 		})
+// 		.attr("r", radius)
+// 		.attr("class", 'legend_Pop');
 
-legendPop.append("circle")
-		.attr("cy", function(d) {
-			return - radius(d);
-		})
-		.attr("r", radius)
-		.attr("class", 'legendPop');
-
-legendPop.append("text")
-		.attr("y", function(d) {
-			return - 2 * radius(d);
-		})
-		.attr("dy", "1.3em")
-		.text(d3.format(".1s"))
-		.attr("class", 'legendPop');
+// legend_Pop.append("text")
+// 		.attr("y", function(d) {
+// 			return - 2 * radius(d);
+// 		})
+// 		.attr("dy", "1.3em")
+// 		.text(d3.format(".1s"))
+// 		.attr("class", 'legend_Pop');
 
 
 
@@ -342,7 +353,8 @@ function reset() {
 
   svg.transition()
       .duration(750)
-      .call(zoom.translate([0, 0]).scale(1).event);
+      .call(zoom.translate([0, 0]).scale(1).event)
+      d3.select("h3").style("visibility","visible");
 }
 
 function zoomed() {
@@ -357,6 +369,6 @@ function stopped() {
 }
 
 </script>
-</div>
-</div>
-</div>
+<!-- </div> -->
+<!-- </div>
+</div> -->
