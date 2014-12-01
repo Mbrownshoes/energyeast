@@ -123,7 +123,8 @@ var svg = d3.select("body")
 
 var radius = d3.scale.sqrt()
 				.domain([0, 1e6])
-				.range([0,8]);
+				.range([0,4]);
+
 
 
 
@@ -138,6 +139,13 @@ var g = svg.append("g")
 svg
 	.call(zoom)
 	.call(zoom.event)
+
+var legendPop = g.append("g")
+				.attr("class", "legend")
+				.attr("transform", "translate(" + (width - 200) + "," + (height - 100) + ")")
+				.selectAll("g")
+				.data([5e5,2e6,4e6])
+				.enter().append("g");
 
 d3.json("can.json", function(error, canada) {
 	if (error) return console.error(error);
@@ -234,7 +242,7 @@ legend.append("text")
 
 var test 
 function clicked(d) {
-	g.selectAll([".bubble", ".aboriginal"]).remove();
+	g.selectAll([".bubble", ".aboriginal", ".legendPop"]).remove();
 	console.log(d.properties.province)
 	prov_name = d.properties.province;
 
@@ -295,25 +303,23 @@ function clicked(d) {
 		});
 
 
-var legendPop = svg.append("g")
-				.attr("class", "legend")
-				.attr("transform", "translate(" + (width - 200) + "," + (height - 100) + ")")
-				.selectAll("g")
-				.data([5e5,2e6,4e6])
-				.enter().append("g");
+
 
 legendPop.append("circle")
 		.attr("cy", function(d) {
 			return - radius(d);
 		})
-		.attr("r", radius);
+		.attr("r", radius)
+		.attr("class", 'legendPop');
 
 legendPop.append("text")
 		.attr("y", function(d) {
 			return - 2 * radius(d);
 		})
 		.attr("dy", "1.3em")
-		.text(d3.format(".1s"));
+		.text(d3.format(".1s"))
+		.attr("class", 'legendPop');
+
 
 
 	d3.json("AL_TA_" + prov_name.replace(/ /g,"_") +"_2_55_eng.json", function(error, aboriginal) {
