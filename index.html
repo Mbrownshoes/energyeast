@@ -19,6 +19,7 @@
 
 #provinces .active {
 	fill: orange;
+	fill-opacity: 0.6;
 }
 
 #prov-borders {
@@ -193,7 +194,7 @@ d3.json("new_pipeline.json", function(error, pipeline) {
 
 
 
-var data = ["Gas pipeline (to be converted for oil)", "Needs to be built", "Aboriginal lands"]
+var data = ["Gas pipeline (to be converted for oil)", "New pipeline (to be built)", "Aboriginal lands"]
 var color = ["steelblue", "hotpink","#006837"]
 
 var legend_t = svg.selectAll("legend_t")
@@ -202,7 +203,7 @@ var legend_t = svg.selectAll("legend_t")
 	.append("g")
 	.attr("class", "legend")
 	.attr("transform", function(d,i) { 
-		console.log(d)
+		// console.log(d)
 		return "translate(0," + 1 * 20 + ")"; });
 
 legend_t.append("rect")
@@ -242,7 +243,6 @@ legend_t.append("text")
 
 });
 
-var test 
 function clicked(d) {
 	g.selectAll([".bubble", ".aboriginal", ".legend_Pop"]).remove();
 	d3.select("h3").style("visibility","hidden")
@@ -250,8 +250,6 @@ function clicked(d) {
 	console.log(d.properties.province)
 	prov_name = d.properties.province;
 
-
-	
   if (active.node() === this) return reset();
   active.classed("active", false);
   active = d3.select(this).classed("active", true);
@@ -353,8 +351,12 @@ function reset() {
 
   svg.transition()
       .duration(750)
-      .call(zoom.translate([0, 0]).scale(1).event)
-      d3.select("h3").style("visibility","visible");
+      .call(zoom.translate([0, 0]).scale(1).event);
+
+  d3.select("h3")
+  .transition()
+  .delay(750)
+  .style("visibility","visible");
 }
 
 function zoomed() {
