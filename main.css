@@ -2,3 +2,15 @@ h1, h2, h3, h4, h5, h6, .navbar-brand, .brand-name {
 font-family: Cheltenham,georgia,sans-serif;
 font-weight: 400;
 }
+
+h1 {
+	width: 50%;
+}
+
+/*
+#feedControlTwo {
+  	width: 280px;
+  	height: 300px;
+	padding: 8px 10px;
+	float: right;
+}*/
