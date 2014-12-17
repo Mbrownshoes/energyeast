@@ -12,9 +12,6 @@
 	pointer-events: all;
 }
 
-.g-graphic {
-  position: relative;
-}
 
 
 #provinces {
@@ -89,7 +86,20 @@
 #rssdiv{
 width: 400px;
 float: left;
+padding: 20px;
+margin-top: -60px;
+
 }
+
+#byline {
+	padding-left: 20px;
+	margin-top: -20px;
+	font-size: 0.8em;
+}
+
+
+
+
 </style>
 <body>
 <script src="http://d3js.org/d3.v3.min.js"></script>
@@ -99,7 +109,7 @@ float: left;
 </head>
 
 <h1>Energy East Pipeline</h1>
-
+<p id="byline"><strong>By Mathew Brown</strong></p>
 <p class="map" id="map">
 
 </div>	
@@ -110,12 +120,12 @@ float: left;
 
 d3.select(".map")
 	.append("h3")
-	.html("Environmental Impact")
+	.html("What is it?")
 	.append("p")
-	.html("Energy East is a proposed pipeline what would transport crude oil from the Alberta oil sands to refineries in Eastern Canada.")
+	.html("Energy East is a proposed pipeline that would transport crude oil from the Alberta oil sands to refineries and ports in Eastern Canada.")
 	.attr("class","g-summary")
 
-var width = 960,
+var width = 900,
 	height = 700,
 	active = d3.select(null);
 
@@ -141,7 +151,9 @@ var radius = d3.scale.sqrt()
 				.domain([0, 1e6])
 				.range([0,4]);
 
-
+var tooltip = d3.select(".map")
+				.append("div")
+				.attr("class", "tooltip");
 
 
 svg.append("rect")
@@ -291,9 +303,22 @@ function clicked(d) {
 		  
 
 	svg.transition()
-	  .duration(750)
-	  .call(zoom.translate(translate).scale(scale).event);
+		.duration(750)
+		.call(zoom.translate(translate).scale(scale).event);
 	 
+
+	var tooltip = d3.select(".map")
+		.append("div")
+		.style("position", "absolute")
+		.style("z-index", "10")
+		.style("visibility", "hidden")
+		.style("color", "#222")
+		.style("padding", "8px")
+		.style("background-color", "#fff")
+		.style("border-radius", "6px")
+		.style("font", "12 px sans-serif")
+		.text("tooltip");
+
 	d3.json("cities.json", function(error, cities) {
 		if (error) return console.error(error);
 		g.append("g")
@@ -308,11 +333,22 @@ function clicked(d) {
 		.attr("r", function(d) {
 			return radius(d.properties.POP_MAX);
 		})
-		.append("title")
-		.text(function(d) {
-			return d.properties.name
-			+ "\nPopulation " + formatNumber(d.properties.POP_MAX);
-		});
+		.on("mouseover", function(d) {
+			tooltip.text(d.properties.name
+		 	+ ":\nPopulation " + formatNumber(d.properties.POP_MAX));
+		 	tooltip.style("visibility", "visible");
+		})
+		.on("mousemove", function(){
+			return tooltip.style("top", (d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px");
+		})
+		.on("mouseout", function(){ return tooltip.style("visibility", "hidden");});
+
+
+		// .append("title")
+		// .text(function(d) {
+		// 	return d.properties.name
+		// 	+ "\nPopulation " + formatNumber(d.properties.POP_MAX);
+		// });
 
 
 // var legend_Pop = g.append("g")

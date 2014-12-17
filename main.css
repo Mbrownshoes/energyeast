@@ -1,16 +1,22 @@
-h1, h2, h3, h4, h5, h6, .navbar-brand, .brand-name {
+h1, h2, h3, h4, h5, h6, b, .navbar-brand, .brand-name {
 font-family: Cheltenham,georgia,sans-serif;
 font-weight: 400;
+padding: 20px;
 }
 
-h1 {
-	width: 50%;
+p {
+	font-family: Cheltenham,georgia,sans-serif;
 }
 
-/*
-#feedControlTwo {
-  	width: 280px;
-  	height: 300px;
-	padding: 8px 10px;
-	float: right;
-}*/
+
+a {
+	font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+	font-size: .75em;
+	text-decoration:none;
+	color:#323232;
+}
+
+a:hover {
+	text-decoration:underline;
+	color:#352DCE;
+}
